@@ -20,7 +20,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // Add your frontend domain here too
+    origin: ["https://rrcfront.netlify.app/"], // Add your frontend domain here too
     methods: ["GET", "POST"],
     credentials: true,
   })
