@@ -1,26 +1,22 @@
-// server/index.js
-
 import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import serverless from "serverless-http";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import "dotenv/config"; // ES Modules
 
-// Set up dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load environment variables
+const _dirname = path.dirname(_filename);
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
-
+console.log("Environment Path:", path.resolve(__dirname, "../../.env"));
+console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY || "NOT FOUND");
 const app = express();
 
 // Middleware
 app.use(
   cors({
-    origin: ["https://rrcfront.netlify.app"], // Add your frontend domain here too
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -31,16 +27,19 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/payments", paymentRoutes);
 
-// Health check
+// Health check endpoint
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-// Error handler
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });
 
-// ✅ EXPORT for Vercel (NO app.listen)
-export const handler = serverless(app);
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(Server running on port ${PORT});
+});
