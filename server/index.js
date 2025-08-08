@@ -1,24 +1,18 @@
 import { fileURLToPath } from "url";
 import path from "path";
-import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import "dotenv/config"; // ES Modules
 
-const __filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(_filename);
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
-console.log("Environment Path:", path.resolve(__dirname, "../../.env"));
-console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY || "NOT FOUND");
+// Initialize Express
 const app = express();
 
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://rrcfront.netlify.app"],
     methods: ["GET", "POST"],
-    credentials: true,
+    credentials: true
   })
 );
 app.use(express.json());
@@ -38,8 +32,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong!" });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(Server running on port ${PORT});
-});
+// Vercel Serverless Export
+export default app;
